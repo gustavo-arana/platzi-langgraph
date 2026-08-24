@@ -1,0 +1,45 @@
+from langgraph.graph import MessagesState
+from langchain_core.messages import AIMessage
+from langchain.chat_models import init_chat_model
+import random
+
+llm = init_chat_model("google_genai:gemini-3.5-flash-lite", temperature=1)
+file_search_tool = {
+    "type": "file_search",
+    "vector_store_ids": ["vs_6a8bfc14c78c8191ad5cb84e42001e5f"],
+}
+
+llm = llm.bind_tools([file_search_tool])
+
+class State(MessagesState):
+    customer_name: str
+    my_age: int
+
+def extractor(state: State):
+    return {}
+
+def conversation(state: State):
+    new_state: State = {}
+    if state.get("customer_name") is None:
+        new_state["customer_name"] = "John Doe"
+    else:
+        new_state["my_age"] = random.randint(18, 99)
+
+    history = state["messages"]
+    last_message = history[-1]
+    ai_message = llm.invoke(last_message.text)
+    new_state["messages"] = [ai_message]
+    print(new_state)
+    return new_state
+
+from langgraph.graph import  StateGraph, START, END
+
+builder = StateGraph(State)
+builder.add_node("extractor", extractor)
+builder.add_node("conversation", conversation)
+
+builder.add_edge(START, "extractor")
+builder.add_edge("extractor", "conversation")
+builder.add_edge("conversation", END)
+
+agent = builder.compile()
