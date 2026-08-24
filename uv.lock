@@ -1444,7 +1444,7 @@ wheels = [
 ]
 
 [[package]]
-name = "platzi-langraph"
+name = "platzi-langgraph"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
