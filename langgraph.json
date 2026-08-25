@@ -5,7 +5,8 @@
         "simple": "./src/agents/simple.py:agent",
         "rag": "./src/agents/rag.py:agent",
         "rag_chaining": "./src/agents/rag_chaining.py:agent",
-        "rag_schema": "./src/agents/rag_schema.py:agent"
+        "rag_schema": "./src/agents/rag_schema.py:agent",
+        "support": "./src/agents/support/agent.py:agent"
     },
     "env": ".env"
 }
