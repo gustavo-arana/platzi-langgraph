@@ -1,26 +1,19 @@
 from langchain_core.tools import tool
-import requests
 
-@tool("get_products", description="Obtiene la lista de productos disponibles en la tienda.")
-def get_products():
-    #Connect with API to get the products
-    """Obtiene la lista de productos disponibles en la tienda."""
-    response = requests.get("https://api.escuelajs.co/api/v1/products")
-    products = response.json()
-    return "".join([f"{product['title']}: ${product['price']} \n" for product in products])
+@tool("booking_appointment", description="Hace el booking de la cita del paciente")
+def booking_appointment(fecha: str, tiempo: str, doctor: str, paciente: str) -> str:
+    # lógica real: validar, reservar y manejar errores
+    return (
+        f"Cita confirmada: paciente {paciente}, doctor {doctor}, "
+        f"fecha {fecha}, hora {tiempo}."
+    )
 
+@tool("get_appointment_availability", description="Valida la disponibilidad del doctor para una cita.")
+def get_appointment_availability(fecha: str, tiempo: str, doctor: str) -> str:
+    # lógica real: consultar agenda y formatear 'slots' útiles
+    return (
+        f"Disponibilidad para {doctor} en {fecha} {tiempo}: 14:00, 15:00, 16:00. "
+        "Indica tu hora preferida."
+    )
 
-@tool("get_weather", description="Get a Weather frof a City")
-def get_weather(city: str):
-    response    = requests.get(f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1")
-    data        = response.json()
-    latitude    = data['results'][0]['latitude']
-    longitude   = data['results'][0]['longitude']
-
-    response    = requests.get(f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current_weather=true")
-    data        = response.json()
-
-    return f"The weather on the city {city.title()} is {data['current_weather']['temperature']}"
-
-
-tools = [get_products, get_weather]
+tools = [booking_appointment, get_appointment_availability]
